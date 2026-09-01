@@ -2,7 +2,7 @@
   "name": "assurances-backoffice-v2",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.23.0",
   "imports": {
     "#/*": "./src/*"
   },
