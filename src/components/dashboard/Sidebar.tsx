@@ -41,7 +41,7 @@ interface NavItem {
 
 const PILOTAGE: NavItem[] = [
   { to: '/dashboard', label: "Vue d'ensemble", icon: LayoutDashboard },
-  { to: '/sinistres', label: 'Sinistres', icon: TriangleAlert, badge: '327' },
+  { to: '/sinistres', label: 'Sinistres', icon: TriangleAlert },
   { to: '/clients', label: 'Clients', icon: Users },
 ]
 
