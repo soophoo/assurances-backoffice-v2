@@ -19,7 +19,8 @@ interface PartnersTableProps {
   canEdit?: boolean
 }
 
-const headCls = 'h-auto bg-[#fafbfc] px-3 py-3 text-[11px] font-bold uppercase tracking-[0.05em] text-muted-foreground'
+const headCls =
+  'h-auto bg-[#fafbfc] px-3 py-3 text-[11px] font-bold uppercase tracking-[0.05em] text-muted-foreground'
 
 function initials(name: string) {
   return name
@@ -43,13 +44,18 @@ export function PartnersTable({
           <TableHead className={headCls}>Code distributeur</TableHead>
           <TableHead className={headCls}>Localisation</TableHead>
           <TableHead className={headCls}>Email</TableHead>
-          <TableHead className={cn(headCls, 'pr-[22px] text-right')}>Actions</TableHead>
+          <TableHead className={cn(headCls, 'pr-[22px] text-right')}>
+            Actions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {partners.length === 0 ? (
           <TableRow className="hover:bg-transparent">
-            <TableCell colSpan={5} className="py-9 text-center text-[13.5px] text-muted-foreground">
+            <TableCell
+              colSpan={5}
+              className="py-9 text-center text-[13.5px] text-muted-foreground"
+            >
               Aucun partenaire ne correspond à votre recherche.
             </TableCell>
           </TableRow>
@@ -63,7 +69,9 @@ export function PartnersTable({
                       {initials(partner.name)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="text-[13.5px] font-semibold">{partner.name}</div>
+                  <div className="text-[13.5px] font-semibold">
+                    {partner.name}
+                  </div>
                 </div>
               </TableCell>
               <TableCell className="py-3.5 text-[13px] font-semibold text-muted-foreground">
@@ -92,12 +100,17 @@ export function PartnersTable({
                   >
                     Modifier
                   </Button>
-                  <Button asChild variant="ghost" size="sm" className="rounded-[9px]">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-[9px]"
+                  >
                     <Link
                       to="/partners/$partnerId"
                       params={{ partnerId: String(partner.id) }}
                     >
-                      Relations
+                      Détails
                     </Link>
                   </Button>
                 </div>

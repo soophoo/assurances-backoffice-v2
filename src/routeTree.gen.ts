@@ -39,6 +39,7 @@ import { Route as AuthSinistresClaimIdRouteImport } from './routes/_auth/sinistr
 import { Route as AuthSinistresTypesRouteImport } from './routes/_auth/sinistres_.types'
 import { Route as AuthSupportConversationIdRouteImport } from './routes/_auth/support_.$conversationId'
 import { Route as AuthCommissionsSchemesNewRouteImport } from './routes/_auth/commissions.schemes_.new'
+import { Route as AuthPartnersPartnerIdRelationsRouteImport } from './routes/_auth/partners_.$partnerId_.relations'
 import { Route as AuthProductsGrilleTarifaireRateTableIdRouteImport } from './routes/_auth/products_.grille-tarifaire_.$rateTableId'
 import { Route as AuthCommissionsSchemesSchemeIdEditRouteImport } from './routes/_auth/commissions.schemes_.$schemeId.edit'
 
@@ -195,6 +196,12 @@ const AuthCommissionsSchemesNewRoute =
     path: '/commissions/schemes/new',
     getParentRoute: () => AuthRoute,
   } as any)
+const AuthPartnersPartnerIdRelationsRoute =
+  AuthPartnersPartnerIdRelationsRouteImport.update({
+    id: '/partners_/$partnerId_/relations',
+    path: '/partners/$partnerId/relations',
+    getParentRoute: () => AuthRoute,
+  } as any)
 const AuthProductsGrilleTarifaireRateTableIdRoute =
   AuthProductsGrilleTarifaireRateTableIdRouteImport.update({
     id: '/products_/grille-tarifaire_/$rateTableId',
@@ -238,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/sinistres/types': typeof AuthSinistresTypesRoute
   '/support/$conversationId': typeof AuthSupportConversationIdRoute
   '/commissions/schemes/new': typeof AuthCommissionsSchemesNewRoute
+  '/partners/$partnerId/relations': typeof AuthPartnersPartnerIdRelationsRoute
   '/products/grille-tarifaire/$rateTableId': typeof AuthProductsGrilleTarifaireRateTableIdRoute
   '/commissions/schemes/$schemeId/edit': typeof AuthCommissionsSchemesSchemeIdEditRoute
 }
@@ -271,6 +279,7 @@ export interface FileRoutesByTo {
   '/sinistres/types': typeof AuthSinistresTypesRoute
   '/support/$conversationId': typeof AuthSupportConversationIdRoute
   '/commissions/schemes/new': typeof AuthCommissionsSchemesNewRoute
+  '/partners/$partnerId/relations': typeof AuthPartnersPartnerIdRelationsRoute
   '/products/grille-tarifaire/$rateTableId': typeof AuthProductsGrilleTarifaireRateTableIdRoute
   '/commissions/schemes/$schemeId/edit': typeof AuthCommissionsSchemesSchemeIdEditRoute
 }
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/_auth/sinistres_/types': typeof AuthSinistresTypesRoute
   '/_auth/support_/$conversationId': typeof AuthSupportConversationIdRoute
   '/_auth/commissions/schemes_/new': typeof AuthCommissionsSchemesNewRoute
+  '/_auth/partners_/$partnerId_/relations': typeof AuthPartnersPartnerIdRelationsRoute
   '/_auth/products_/grille-tarifaire_/$rateTableId': typeof AuthProductsGrilleTarifaireRateTableIdRoute
   '/_auth/commissions/schemes_/$schemeId/edit': typeof AuthCommissionsSchemesSchemeIdEditRoute
 }
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/sinistres/types'
     | '/support/$conversationId'
     | '/commissions/schemes/new'
+    | '/partners/$partnerId/relations'
     | '/products/grille-tarifaire/$rateTableId'
     | '/commissions/schemes/$schemeId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -374,6 +385,7 @@ export interface FileRouteTypes {
     | '/sinistres/types'
     | '/support/$conversationId'
     | '/commissions/schemes/new'
+    | '/partners/$partnerId/relations'
     | '/products/grille-tarifaire/$rateTableId'
     | '/commissions/schemes/$schemeId/edit'
   id:
@@ -408,6 +420,7 @@ export interface FileRouteTypes {
     | '/_auth/sinistres_/types'
     | '/_auth/support_/$conversationId'
     | '/_auth/commissions/schemes_/new'
+    | '/_auth/partners_/$partnerId_/relations'
     | '/_auth/products_/grille-tarifaire_/$rateTableId'
     | '/_auth/commissions/schemes_/$schemeId/edit'
   fileRoutesById: FileRoutesById
@@ -632,6 +645,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCommissionsSchemesNewRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/partners_/$partnerId_/relations': {
+      id: '/_auth/partners_/$partnerId_/relations'
+      path: '/partners/$partnerId/relations'
+      fullPath: '/partners/$partnerId/relations'
+      preLoaderRoute: typeof AuthPartnersPartnerIdRelationsRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/products_/grille-tarifaire_/$rateTableId': {
       id: '/_auth/products_/grille-tarifaire_/$rateTableId'
       path: '/products/grille-tarifaire/$rateTableId'
@@ -675,6 +695,7 @@ interface AuthRouteChildren {
   AuthSinistresTypesRoute: typeof AuthSinistresTypesRoute
   AuthSupportConversationIdRoute: typeof AuthSupportConversationIdRoute
   AuthCommissionsSchemesNewRoute: typeof AuthCommissionsSchemesNewRoute
+  AuthPartnersPartnerIdRelationsRoute: typeof AuthPartnersPartnerIdRelationsRoute
   AuthProductsGrilleTarifaireRateTableIdRoute: typeof AuthProductsGrilleTarifaireRateTableIdRoute
   AuthCommissionsSchemesSchemeIdEditRoute: typeof AuthCommissionsSchemesSchemeIdEditRoute
 }
@@ -705,6 +726,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthSinistresTypesRoute: AuthSinistresTypesRoute,
   AuthSupportConversationIdRoute: AuthSupportConversationIdRoute,
   AuthCommissionsSchemesNewRoute: AuthCommissionsSchemesNewRoute,
+  AuthPartnersPartnerIdRelationsRoute: AuthPartnersPartnerIdRelationsRoute,
   AuthProductsGrilleTarifaireRateTableIdRoute:
     AuthProductsGrilleTarifaireRateTableIdRoute,
   AuthCommissionsSchemesSchemeIdEditRoute:

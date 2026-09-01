@@ -1,23 +1,15 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { getPartner } from '#/services/partners'
-import { getUsers } from '#/services/users'
-import { Stepper } from '#/components/ui/Stepper'
-import { ManagerStep } from '#/components/partners/wizard/ManagerStep'
-import { AgenciesStep } from '#/components/partners/wizard/AgenciesStep'
-import { SellersStep } from '#/components/partners/wizard/SellersStep'
+import { PartnerOverview } from '#/components/partners/PartnerOverview'
 import { Card } from '#/components/ui/card'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
-import { Separator } from '#/components/ui/separator'
 
 export const Route = createFileRoute('/_auth/partners_/$partnerId')({
-  component: PartnerRelationsPage,
+  component: PartnerDetailPage,
 })
-
-const STEPS = ['Manager', 'Agences', 'Agents']
 
 function BackLink() {
   return (
@@ -35,11 +27,9 @@ function BackLink() {
   )
 }
 
-function PartnerRelationsPage() {
+function PartnerDetailPage() {
   const { partnerId } = Route.useParams()
   const id = Number(partnerId)
-  const navigate = useNavigate()
-  const [step, setStep] = useState(0)
 
   const {
     data: partner,
@@ -49,12 +39,6 @@ function PartnerRelationsPage() {
     queryKey: ['partner', id],
     queryFn: () => getPartner(id),
     retry: false,
-  })
-
-  // Même clé que ManagerStep : sert à savoir si un manager est déjà rattaché.
-  const { data: usersData } = useQuery({
-    queryKey: ['users', 'all'],
-    queryFn: () => getUsers({ page: 0, size: 200 }),
   })
 
   if (isLoading) {
@@ -79,79 +63,44 @@ function PartnerRelationsPage() {
     )
   }
 
-  const hasManager = (usersData?.content ?? []).some((u) => u.partnerId === id)
-  const isLastStep = step === STEPS.length - 1
-
-  // On ne peut pas dépasser l'étape Manager tant qu'aucun manager n'est rattaché.
-  function goToStep(target: number) {
-    if (target > 0 && !hasManager) return
-    setStep(target)
-  }
-
   return (
     <>
       <BackLink />
 
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.03em]">
-            Relations · {partner.name}
-          </h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-[26px] font-extrabold tracking-[-0.03em]">
+              {partner.name}
+            </h1>
+            <Badge
+              variant="secondary"
+              className="rounded-md px-2.5 py-1 text-[12px] font-semibold"
+            >
+              Code {partner.distributorCode}
+            </Badge>
+          </div>
           <p className="mt-[7px] text-sm text-muted-foreground">
-            Rattachez le manager, les agences et les agents de ce partenaire.
+            Partenaire #{partner.id}
+            {partner.location ? ` · ${partner.location}` : ''} · agences, agents
+            et manager du réseau.
           </p>
         </div>
-        <Badge
-          variant="secondary"
-          className="rounded-md px-2.5 py-1 text-[12px] font-semibold"
-        >
-          Code {partner.distributorCode}
-        </Badge>
-      </div>
-
-      <Card className="gap-0 p-6">
-        <Stepper steps={STEPS} current={step} onStepClick={goToStep} />
-        <Separator className="my-5" />
-        {step === 0 && <ManagerStep partnerId={id} />}
-        {step === 1 && <AgenciesStep partnerId={id} />}
-        {step === 2 && <SellersStep partnerId={id} />}
-      </Card>
-
-      <div className="mt-5 flex items-center justify-between">
         <Button
-          variant="outline"
-          className="rounded-[11px]"
-          disabled={step === 0}
-          onClick={() => setStep((s) => s - 1)}
+          asChild
+          className="rounded-[11px] shadow-[0_4px_14px_rgba(0,51,127,0.22)]"
         >
-          <ChevronLeft />
-          Précédent
-        </Button>
-        {isLastStep ? (
-          <Button
-            className="rounded-[11px] shadow-[0_4px_14px_rgba(0,51,127,0.22)]"
-            onClick={() => navigate({ to: '/partners' })}
+          <Link
+            to="/partners/$partnerId/relations"
+            params={{ partnerId: String(partner.id) }}
           >
-            Terminer
-          </Button>
-        ) : (
-          <div className="flex items-center gap-3">
-            {step === 0 && !hasManager && (
-              <span className="text-[13px] text-[#9a7400]">
-                Rattachez d'abord un manager pour continuer.
-              </span>
-            )}
-            <Button
-              className="rounded-[11px] shadow-[0_4px_14px_rgba(0,51,127,0.22)]"
-              disabled={step === 0 && !hasManager}
-              onClick={() => goToStep(step + 1)}
-            >
-              Suivant
-              <ChevronRight />
-            </Button>
-          </div>
-        )}
+            <Plus />
+            Ajouter une relation
+          </Link>
+        </Button>
       </div>
+
+      <PartnerOverview partner={partner} />
     </>
   )
 }
