@@ -1,8 +1,8 @@
-import { Bell, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '#/components/ui/input'
-import { Button } from '#/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs'
+import { NotificationsMenu } from '#/components/notifications/NotificationsMenu'
 import { useShell } from './shell'
 import type { Period } from './shell'
 
@@ -45,16 +45,7 @@ export function Topbar() {
         </TabsList>
       </Tabs>
 
-      <Button
-        variant="outline"
-        size="icon"
-        aria-label="Notifications"
-        onClick={() => toast('3 nouvelles notifications')}
-        className="relative size-[41px] rounded-[11px] bg-card"
-      >
-        <Bell className="size-[18px] text-[#3a4150]" />
-        <span className="absolute top-[9px] right-[11px] size-[7px] rounded-full border-[1.5px] border-card bg-[#FFC61E]" />
-      </Button>
+      <NotificationsMenu />
     </div>
   )
 }

@@ -1,10 +1,12 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import {
   ChevronDown,
   ChevronsUpDown,
   FileText,
   HandCoins,
+  Headset,
   LayoutDashboard,
   LogOut,
   Package,
@@ -16,6 +18,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { getSupportUnreadCount, supportKeys } from '#/services/support'
 import { Avatar, AvatarFallback } from '#/components/ui/avatar'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
@@ -149,6 +152,22 @@ export function Sidebar({
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isAdmin = user?.role.toUpperCase() === 'ADMIN'
 
+  // Badge de messages support non lus — la file est commune à tous les
+  // agents ; en cas de rôle sans `support:write` la requête échoue en
+  // silence et le badge reste absent.
+  const { data: supportUnread } = useQuery({
+    queryKey: supportKeys.unread,
+    queryFn: getSupportUnreadCount,
+    refetchInterval: 30_000,
+    retry: false,
+  })
+  const supportItem: NavItem = {
+    to: '/support',
+    label: 'Support client',
+    icon: Headset,
+    ...(supportUnread ? { badge: String(supportUnread) } : {}),
+  }
+
   const isActive = (item: NavItem) =>
     pathname.startsWith(item.to) ||
     (item.alsoMatch?.some((p) => pathname.startsWith(p)) ?? false)
@@ -215,6 +234,7 @@ export function Sidebar({
         {PILOTAGE.filter((item) => item.to !== '/sinistres' || isAdmin).map(
           renderItem,
         )}
+        {renderItem(supportItem)}
 
         <CollapsibleNavGroup
           icon={FileText}
