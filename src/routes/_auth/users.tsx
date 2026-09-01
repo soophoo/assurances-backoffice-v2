@@ -2,8 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getUsers } from '#/services/users'
+import type { UserResponse } from '#/services/users'
 import { UsersTable } from '#/components/users/UsersTable'
 import { AddUserModal } from '#/components/users/AddUserModal'
+import { AdminDetailDrawer } from '#/components/users/AdminDetailDrawer'
 import { Pagination } from '#/components/ui/Pagination'
 import { Card } from '#/components/ui/card'
 import {
@@ -27,6 +29,7 @@ function UsersPage() {
   const [page, setPage] = useState(0)
   const [showModal, setShowModal] = useState(false)
   const [filterVerified, setFilterVerified] = useState<VerifiedFilter>('all')
+  const [selected, setSelected] = useState<UserResponse | null>(null)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['users', page],
@@ -57,7 +60,7 @@ function UsersPage() {
     <>
       <PageHeader
         title="Administrateurs"
-        subtitle="Utilisateurs internes et niveaux d'accès"
+        subtitle="Comptes internes et niveaux d'accès"
         action="Inviter un administrateur"
         onAction={() => setShowModal(true)}
         actionDisabled={!can('iam:write')}
@@ -95,8 +98,16 @@ function UsersPage() {
       ) : (
         <>
           <Card className="gap-0 overflow-hidden py-0">
-            <UsersTable users={users} />
+            <UsersTable
+              users={users}
+              onSelect={setSelected}
+              selectedId={selected?.id}
+            />
           </Card>
+          <AdminDetailDrawer
+            user={selected}
+            onClose={() => setSelected(null)}
+          />
           <Pagination
             page={page}
             totalPages={data?.totalPages ?? 0}

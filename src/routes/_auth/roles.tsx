@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Plus, ShieldCheck } from 'lucide-react'
 import { getRoles } from '#/services/roles'
 import { RolesTable } from '#/components/roles/RolesTable'
-import { AddRoleForm } from '#/components/roles/AddRoleForm'
+import { CreateRoleDrawer } from '#/components/roles/CreateRoleDrawer'
+import { RoleDetailDrawer } from '#/components/roles/RoleDetailDrawer'
 import { Pagination } from '#/components/ui/Pagination'
 import { Card } from '#/components/ui/card'
 import { Button } from '#/components/ui/button'
@@ -17,7 +18,10 @@ function RolesPage() {
   const { search } = useShell()
   const { can } = usePermissions()
   const [page, setPage] = useState(0)
-  const [showForm, setShowForm] = useState(false)
+  const [showCreate, setShowCreate] = useState(false)
+  // On garde l'id plutôt que l'objet pour que le panneau reflète les
+  // permissions rafraîchies après chaque ajout / retrait.
+  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['roles', page],
@@ -56,31 +60,24 @@ function RolesPage() {
           </Button>
           <Button
             className="rounded-[11px] shadow-[0_4px_14px_rgba(0,51,127,0.22)]"
-            onClick={() => setShowForm((v) => !v)}
-            disabled={!showForm && !can('iam:write')}
+            onClick={() => setShowCreate(true)}
+            disabled={!can('iam:write')}
             title={
               can('iam:write')
                 ? undefined
-                : "Vous n'avez pas la permission requise (iam:write)."
+                : "Vous n'avez pas les droits requis (Rôles & accès — Modifier)."
             }
           >
-            {showForm ? (
-              'Annuler'
-            ) : (
-              <>
-                <Plus />
-                Créer un rôle
-              </>
-            )}
+            <Plus />
+            Créer un rôle
           </Button>
         </div>
       </div>
 
-      {showForm && (
-        <Card className="mb-[18px] p-6">
-          <AddRoleForm onCancel={() => setShowForm(false)} />
-        </Card>
-      )}
+      <CreateRoleDrawer
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+      />
 
       {isLoading ? (
         <Card className="gap-0 py-0">
@@ -91,8 +88,18 @@ function RolesPage() {
       ) : (
         <>
           <Card className="gap-0 overflow-hidden py-0">
-            <RolesTable roles={roles} />
+            <RolesTable
+              roles={roles}
+              onSelect={(role) => setSelectedRoleId(role.id)}
+              selectedId={selectedRoleId ?? undefined}
+            />
           </Card>
+          <RoleDetailDrawer
+            role={
+              (data?.content ?? []).find((r) => r.id === selectedRoleId) ?? null
+            }
+            onClose={() => setSelectedRoleId(null)}
+          />
           <Pagination
             page={page}
             totalPages={data?.totalPages ?? 0}
